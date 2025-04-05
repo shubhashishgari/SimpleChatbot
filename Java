@@ -1,0 +1,91 @@
+import java.util.Random;
+import java.util.Scanner;
+
+public class Chatbot {
+
+    // These are the lists of possible responses the chatbot can use.
+    private final String[] greetings = {"Hello!", "Hi there!", "Hey!", "Greetings!"};
+    private final String[] farewells = {"Goodbye!", "See you later!", "Bye!", "Have a great day!"};
+    private final String[] howAreYouResponses = {"I'm doing well, thank you for asking!", "I'm fine, how about you?", "Feeling good today!", "Just processing information as usual."};
+    private final String[] unknownResponses = {"I'm not sure I understand.", "Could you please rephrase that?", "That's interesting, tell me more.", "Hmm, I don't have information on that."};
+
+    private String name; // This variable will store the user's name, if they tell us.
+    private final Random random = new Random(); // This object helps us pick random responses.
+
+    // This method returns a random greeting.
+    public String greet() {
+        int randomIndex = random.nextInt(greetings.length); // Get a random number within the range of the greetings list.
+        return greetings[randomIndex]; // Return the greeting at that random index.
+    }
+
+    // This method returns a random farewell.
+    public String farewell() {
+        int randomIndex = random.nextInt(farewells.length);
+        return farewells[randomIndex];
+    }
+
+    // This method returns a random response to "how are you?".
+    public String askHowAreYou() {
+        int randomIndex = random.nextInt(howAreYouResponses.length);
+        return howAreYouResponses[randomIndex];
+    }
+
+    // This method sets the user's name and returns a personalized greeting.
+    public String respondToName(String name) {
+        this.name = name; // Store the user's name.
+        return "Nice to meet you, " + name + "!"; // Use the name in the response.
+    }
+
+    // This method returns a random response when the chatbot doesn't understand the input.
+    public String handleUnknown() {
+        int randomIndex = random.nextInt(unknownResponses.length);
+        return unknownResponses[randomIndex];
+    }
+
+    // This is the main method that decides how the chatbot should respond.
+    public String respond(String userInput) {
+        userInput = userInput.toLowerCase(); // Convert the user's input to lowercase to make it easier to compare.
+
+        // Check what the user said and provide an appropriate response.
+        if (userInput.contains("hello") || userInput.contains("hi") || userInput.contains("hey")) {
+            return greet();
+        } else if (userInput.contains("bye") || userInput.contains("goodbye") || userInput.contains("see you")) {
+            return farewell();
+        } else if (userInput.contains("how are you")) {
+            return askHowAreYou();
+        } else if (userInput.contains("my name is ")) {
+            // Extract the name from the input.  For example, if the input is "my name is John",
+            // this will get "John".
+            String name = userInput.substring(userInput.indexOf("my name is ") + "my name is ".length()).trim();
+            return respondToName(name);
+        } else if (userInput.contains("what is your name")) {
+            return "I am a simple chatbot.";
+        } else {
+            return handleUnknown(); // If we don't understand, use a default response.
+        }
+    }
+
+    // This method starts the chatbot conversation.
+    public void startChat() {
+        System.out.println(greet()); // Print the initial greeting.
+        Scanner scanner = new Scanner(System.in); // Create a Scanner object to read user input.
+
+        while (true) { // Keep chatting until the user says goodbye.
+            System.out.print("You: "); // Prompt the user to enter text.
+            String userInput = scanner.nextLine(); // Read a line of text from the user.
+            String response = respond(userInput); // Get the chatbot's response.
+            System.out.println("Chatbot: " + response); // Print the response.
+
+            if (response.equals(farewell())) { // If the response is a farewell, end the chat.
+                break;
+            }
+        }
+        scanner.close(); // Close the scanner to free up resources.
+    }
+
+    // This is the main method, where the program starts running.
+    public static void main(String[] args) {
+        Chatbot chatbot = new Chatbot(); // Create a Chatbot object.
+        chatbot.startChat(); // Start the chat.
+    }
+}
