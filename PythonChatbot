@@ -1,0 +1,59 @@
+import random
+import re
+
+class Chatbot:
+    def __init__(self):
+        self.greetings = ["Hello!", "Hi there!", "Hey!", "Greetings!"]
+        self.farewells = ["Goodbye!", "See you later!", "Bye!", "Have a great day!"]
+        self.how_are_you_responses = ["I'm doing well, thank you for asking!", "I'm fine, how about you?", "Feeling good today!", "Just processing information as usual."]
+        self.unknown_responses = ["I'm not sure I understand.", "Could you please rephrase that?", "That's interesting, tell me more.", "Hmm, I don't have information on that."]
+        self.name = None
+
+    def greet(self):
+        return random.choice(self.greetings)
+
+    def farewell(self):
+        return random.choice(self.farewells)
+
+    def ask_how_are_you(self):
+        return random.choice(self.how_are_you_responses)
+
+    def respond_to_name(self, name):
+        self.name = name
+        return f"Nice to meet you, {name}!"
+
+    def handle_unknown(self):
+        return random.choice(self.unknown_responses)
+
+    def respond(self, user_input):
+        user_input = user_input.lower()
+
+        # Use regular expressions for more flexible pattern matching
+        if re.search(r"hello|hi|hey", user_input):
+            return self.greet()
+        elif re.search(r"bye|goodbye|see you", user_input):
+            return self.farewell()
+        elif re.search(r"how are you", user_input):
+            return self.ask_how_are_you()
+        elif re.search(r"my name is (.*)", user_input):
+            name = re.search(r"my name is (.*)", user_input).group(1)
+            return self.respond_to_name(name)
+        elif re.search(r"what is your name", user_input):
+            return "I am a simple chatbot."
+        else:
+            return self.handle_unknown()
+
+    def start_chat(self):
+        print(self.greet())
+
+        while True:
+            user_input = input("You: ")
+            response = self.respond(user_input)
+            print("Chatbot:", response)
+
+            if response in self.farewells:
+                break
+
+if __name__ == "__main__":
+    chatbot = Chatbot()
+    chatbot.start_chat()
